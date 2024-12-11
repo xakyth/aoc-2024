@@ -42,7 +42,51 @@ function part1(): number {
 }
 
 function part2(): number {
-  return 0;
+  let totalCalibrationResult = 0;
+  function backtrack(
+    idx: number,
+    operandsCount: number,
+    acc: number,
+    target: number,
+    curRow: number
+  ): boolean {
+    if (idx == operandsCount) {
+      return acc == target;
+    }
+    if (acc > target) {
+      return false;
+    }
+    return (
+      backtrack(
+        idx + 1,
+        operandsCount,
+        acc + operands[curRow][idx],
+        target,
+        curRow
+      ) ||
+      backtrack(
+        idx + 1,
+        operandsCount,
+        acc * operands[curRow][idx],
+        target,
+        curRow
+      ) ||
+      backtrack(
+        idx + 1,
+        operandsCount,
+        +`${acc}${operands[curRow][idx]}`,
+        target,
+        curRow
+      )
+    );
+  }
+  for (let i = 0; i < testValues.length; i++) {
+    if (backtrack(1, operands[i].length, operands[i][0], testValues[i], i)) {
+      totalCalibrationResult += testValues[i];
+    }
+  }
+
+  return totalCalibrationResult;
 }
 
 const data: string = fs.readFileSync('./day07input.txt', 'utf-8');
